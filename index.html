@@ -48,7 +48,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 20px auto 32px;
       padding: 0 16px;
     }
@@ -72,15 +72,35 @@
       color: #6b7280;
     }
 
+    form { width: 100%; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .col-12 { grid-column: span 12; }
+    .col-8  { grid-column: span 8; }
+    .col-6  { grid-column: span 6; }
+    .col-4  { grid-column: span 4; }
+    .col-3  { grid-column: span 3; }
+    .col-2  { grid-column: span 2; }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: repeat(1, 1fr); }
+      .col-12, .col-8, .col-6, .col-4, .col-3, .col-2 { grid-column: span 1; }
+    }
+
     .field {
-      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
     }
 
     label {
       font-size: 14px;
-      font-weight: 600;
-      display: block;
       margin-bottom: 4px;
+      font-weight: 600;
     }
 
     .required::after {
@@ -89,17 +109,47 @@
     }
 
     input, select {
-      width: 100%;
-      padding: 8px 10px;
+      padding: 9px 11px;
       border-radius: 8px;
-      border: 1px solid #d1d5db;
+      border: 1px solid #d0d0d0;
       font-size: 14px;
       outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #fff;
     }
 
     input:focus, select:focus {
       border-color: #f97316;
       box-shadow: 0 0 0 1px rgba(249,115,22,0.25);
+    }
+
+    input[disabled] {
+      background: #f0f0f0;
+      cursor: not-allowed;
+    }
+
+    .row-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .row-inline input[type="checkbox"] {
+      width: auto;
+    }
+
+    .error {
+      font-size: 12px;
+      color: #dc2626;
+      margin-top: 3px;
+      min-height: 14px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #777;
+      margin-top: 2px;
     }
 
     button.primary {
@@ -115,9 +165,7 @@
       margin-top: 8px;
     }
 
-    button.primary:hover {
-      background: #fb923c;
-    }
+    button.primary:hover { background: #fb923c; }
 
     button.secondary {
       padding: 8px 12px;
@@ -161,14 +209,6 @@
       background: #e5e7eb;
       color: #374151;
     }
-
-    @media (min-width: 720px) {
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px 16px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -184,51 +224,166 @@
   <div class="container">
     <div class="card">
 
-      <!-- MENU 1: FORMULÁRIO -->
+      <!-- MENU 1: FORMULÁRIO COMPLETO -->
       <section id="sec-form">
-        <h2>Formulário</h2>
-        <p class="subtitle">Os dados serão salvos localmente neste navegador (localStorage).</p>
+        <h2>Formulário de cadastro</h2>
+        <p class="subtitle">Os dados são salvos localmente neste navegador (localStorage).</p>
 
-        <form id="formCadastro">
-          <div class="grid-2">
-            <div class="field">
-              <label for="nome" class="required">Nome</label>
-              <input type="text" id="nome" name="nome" required>
+        <form id="cadastroForm">
+          <!-- DADOS PESSOAIS -->
+          <h3>Dados pessoais</h3>
+          <div class="grid">
+            <div class="field col-8">
+              <label for="nome" class="required">Nome completo</label>
+              <input type="text" id="nome" name="nome" autocomplete="name" required />
+              <div class="error" id="erro-nome"></div>
             </div>
 
-            <div class="field">
+            <div class="field col-4">
               <label for="cpf" class="required">CPF</label>
-              <input type="text" id="cpf" name="cpf" maxlength="14" placeholder="000.000.000-00" required>
+              <input
+                type="text"
+                id="cpf"
+                name="cpf"
+                inputmode="numeric"
+                maxlength="14"
+                placeholder="000.000.000-00"
+                required
+              />
+              <div class="error" id="erro-cpf"></div>
             </div>
 
-            <div class="field">
+            <div class="field col-4">
               <label for="dataNascimento" class="required">Data de nascimento</label>
-              <input type="date" id="dataNascimento" name="dataNascimento" required>
+              <input type="date" id="dataNascimento" name="dataNascimento" required />
+              <div class="error" id="erro-dataNascimento"></div>
             </div>
 
-            <div class="field">
+            <div class="field col-8">
               <label for="nomeMae" class="required">Nome da mãe</label>
-              <input type="text" id="nomeMae" name="nomeMae" required>
+              <input type="text" id="nomeMae" name="nomeMae" required />
+              <div class="error" id="erro-nomeMae"></div>
             </div>
+          </div>
 
-            <div class="field">
+          <!-- DADOS DE CONTATO -->
+          <h3>Dados de contato</h3>
+          <div class="grid">
+            <div class="field col-4">
               <label for="telefone" class="required">Telefone contato</label>
-              <input type="tel" id="telefone" name="telefone" placeholder="(11) 91234-5678" required>
+              <input
+                type="tel"
+                id="telefone"
+                name="telefone"
+                inputmode="tel"
+                placeholder="(11) 91234-5678"
+                maxlength="15"
+                required
+              />
+              <div class="error" id="erro-telefone"></div>
+              <div class="hint">Aceita fixo ou celular com DDD</div>
             </div>
 
-            <div class="field">
+            <div class="field col-8">
               <label for="email" class="required">E-mail</label>
-              <input type="email" id="email" name="email" required>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                placeholder="seuemail@exemplo.com"
+                required
+              />
+              <div class="error" id="erro-email"></div>
             </div>
+          </div>
 
-            <div class="field">
+          <!-- ENDEREÇO -->
+          <h3>Endereço</h3>
+          <div class="grid">
+            <div class="field col-3">
               <label for="cep" class="required">CEP</label>
-              <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000" required>
+              <input
+                type="text"
+                id="cep"
+                name="cep"
+                inputmode="numeric"
+                maxlength="9"
+                placeholder="00000-000"
+                required
+              />
+              <div class="error" id="erro-cep"></div>
+              <div class="hint">Consulta automática via ViaCEP</div>
             </div>
 
-            <div class="field">
+            <div class="field col-9">
+              <label for="logradouro" class="required">Logradouro</label>
+              <input type="text" id="logradouro" name="logradouro" required />
+              <div class="error" id="erro-logradouro"></div>
+            </div>
+
+            <div class="field col-3">
+              <label for="numero" class="required">Número</label>
+              <input type="text" id="numero" name="numero" inputmode="numeric" required />
+              <div class="row-inline">
+                <input type="checkbox" id="semNumero" />
+                <label for="semNumero" style="font-weight:400;margin:0;font-size:13px;">Sem número</label>
+              </div>
+              <div class="error" id="erro-numero"></div>
+            </div>
+
+            <div class="field col-3">
+              <label for="complemento">Complemento</label>
+              <input type="text" id="complemento" name="complemento" />
+              <div class="error" id="erro-complemento"></div>
+            </div>
+
+            <div class="field col-6">
+              <label for="bairro" class="required">Bairro</label>
+              <input type="text" id="bairro" name="bairro" required />
+              <div class="error" id="erro-bairro"></div>
+            </div>
+
+            <div class="field col-2">
+              <label for="uf" class="required">Estado (UF)</label>
+              <select id="uf" name="uf" required>
+                <option value="">Selecione</option>
+                <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AP">AP</option>
+                <option value="AM">AM</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MT">MT</option>
+                <option value="MS">MS</option>
+                <option value="MG">MG</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PR">PR</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RS">RS</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="SC">SC</option>
+                <option value="SP">SP</option>
+                <option value="SE">SE</option>
+                <option value="TO">TO</option>
+              </select>
+              <div class="error" id="erro-uf"></div>
+            </div>
+
+            <div class="field col-4">
               <label for="cidade" class="required">Cidade</label>
-              <input type="text" id="cidade" name="cidade" required>
+              <input type="text" id="cidade" name="cidade" list="cidades-list" required />
+              <datalist id="cidades-list"></datalist>
+              <div class="error" id="erro-cidade"></div>
             </div>
           </div>
 
@@ -239,9 +394,9 @@
 
       <!-- MENU 2: LISTAGEM -->
       <section id="sec-lista" style="display:none;">
-        <h2>Registros</h2>
+        <h2>Registros salvos</h2>
         <p class="subtitle">
-          Registros armazenados no localStorage deste navegador.
+          Dados armazenados no localStorage deste navegador.
           <span class="badge" id="badge-total">0 registros</span>
         </p>
 
@@ -254,13 +409,15 @@
             <tr>
               <th>Nome</th>
               <th>CPF</th>
-              <th>Data nasc.</th>
-              <th>Cidade</th>
+              <th>Nasc.</th>
+              <th>Mãe</th>
+              <th>Cidade/UF</th>
               <th>Telefone</th>
+              <th>E-mail</th>
             </tr>
           </thead>
           <tbody id="tbody-registros">
-            <tr><td colspan="5">Nenhum registro ainda.</td></tr>
+            <tr><td colspan="7">Nenhum registro.</td></tr>
           </tbody>
         </table>
 
@@ -272,7 +429,7 @@
 
   <script>
     // ====== "BANCO" NO LOCALSTORAGE ======
-    const STORAGE_KEY = "registros_cadastro";
+    const STORAGE_KEY = "registros_cadastro_completo";
 
     function carregarRegistros() {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -306,78 +463,238 @@
       atualizarTabela();
     });
 
-    // ====== MÁSCARAS BÁSICAS (CPF, TEL, CEP) ======
+    // ====== HELPERS DE ERRO ======
+    function setError(id, msg) {
+      const el = document.getElementById("erro-" + id);
+      if (el) el.textContent = msg || "";
+    }
+
+    function clearAllErrors() {
+      document.querySelectorAll(".error").forEach(e => e.textContent = "");
+    }
+
+    // ====== CAMPOS ======
     const cpfInput = document.getElementById("cpf");
+    const telefoneInput = document.getElementById("telefone");
+    const cepInput = document.getElementById("cep");
+    const numeroInput = document.getElementById("numero");
+    const semNumeroCheckbox = document.getElementById("semNumero");
+    const logradouroInput = document.getElementById("logradouro");
+    const bairroInput = document.getElementById("bairro");
+    const ufSelect = document.getElementById("uf");
+    const cidadeInput = document.getElementById("cidade");
+    const cidadesList = document.getElementById("cidades-list");
+    const dataNascimentoInput = document.getElementById("dataNascimento");
+    const emailInput = document.getElementById("email");
+    const form = document.getElementById("cadastroForm");
+    const statusEnvio = document.getElementById("status-envio");
+
+    // ====== CPF - máscara + validação ======
+    function isValidCPF(cpf) {
+      cpf = String(cpf).replace(/\D/g, "");
+      if (!cpf || cpf.length !== 11) return false;
+      if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+      let sum = 0;
+      for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+      let d1 = (sum * 10) % 11;
+      if (d1 === 10) d1 = 0;
+      if (d1 !== parseInt(cpf[9])) return false;
+
+      sum = 0;
+      for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+      let d2 = (sum * 10) % 11;
+      if (d2 === 10) d2 = 0;
+      if (d2 !== parseInt(cpf[10])) return false;
+
+      return true;
+    }
+
     cpfInput.addEventListener("input", (e) => {
       let v = e.target.value.replace(/\D/g, "");
       if (v.length > 11) v = v.slice(0, 11);
-      if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/,"$1.$2.$3-$4");
-      else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
-      else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, "$1.$2");
+
+      if (v.length > 9) {
+        v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4");
+      } else if (v.length > 6) {
+        v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
+      } else if (v.length > 3) {
+        v = v.replace(/(\d{3})(\d{0,3})/, "$1.$2");
+      }
       e.target.value = v;
+      setError("cpf", "");
     });
 
-    const telInput = document.getElementById("telefone");
-    telInput.addEventListener("input", (e) => {
+    cpfInput.addEventListener("blur", () => {
+      const value = cpfInput.value;
+      if (value && !isValidCPF(value)) {
+        setError("cpf", "CPF inválido.");
+      }
+    });
+
+    // ====== Telefone BR ======
+    function isTelefoneValido(str) {
+      const digitos = str.replace(/\D/g, "");
+      return digitos.length === 10 || digitos.length === 11;
+    }
+
+    telefoneInput.addEventListener("input", (e) => {
       let v = e.target.value.replace(/\D/g, "");
       if (v.length > 11) v = v.slice(0, 11);
-      if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
-      else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-      else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, "($1) $2");
+
+      if (v.length > 10) {
+        v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+      } else if (v.length > 6) {
+        v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+      } else if (v.length > 2) {
+        v = v.replace(/(\d{2})(\d{0,5})/, "($1) $2");
+      }
       e.target.value = v;
+      setError("telefone", "");
     });
 
-    const cepInput = document.getElementById("cep");
+    telefoneInput.addEventListener("blur", () => {
+      if (telefoneInput.value && !isTelefoneValido(telefoneInput.value)) {
+        setError("telefone", "Telefone inválido. Use DDD + número.");
+      }
+    });
+
+    // ====== CEP + ViaCEP ======
     cepInput.addEventListener("input", (e) => {
       let v = e.target.value.replace(/\D/g, "");
       if (v.length > 8) v = v.slice(0, 8);
       if (v.length > 5) v = v.replace(/(\d{5})(\d{0,3})/, "$1-$2");
       e.target.value = v;
+      setError("cep", "");
     });
 
-    // Validação simples de CPF (apenas estrutura)
-    function isValidCPF(cpf) {
-      cpf = cpf.replace(/\D/g, "");
-      if (cpf.length !== 11) return false;
-      if (/^(\d)\1{10}$/.test(cpf)) return false;
-      let s = 0;
-      for (let i = 0; i < 9; i++) s += cpf[i] * (10 - i);
-      let d1 = (s * 10) % 11; if (d1 === 10) d1 = 0;
-      if (d1 != cpf[9]) return false;
-      s = 0;
-      for (let i = 0; i < 10; i++) s += cpf[i] * (11 - i);
-      let d2 = (s * 10) % 11; if (d2 === 10) d2 = 0;
-      if (d2 != cpf[10]) return false;
-      return true;
+    async function buscarCEP(cep) {
+      const only = cep.replace(/\D/g, "");
+      if (only.length !== 8) {
+        setError("cep", "CEP deve ter 8 dígitos.");
+        return;
+      }
+      try {
+        const resp = await fetch(`https://viacep.com.br/ws/${only}/json/`);
+        if (!resp.ok) throw new Error("Erro ViaCEP");
+        const data = await resp.json();
+        if (data.erro) {
+          setError("cep", "CEP não encontrado.");
+          return;
+        }
+
+        logradouroInput.value = data.logradouro || "";
+        bairroInput.value = data.bairro || "";
+        cidadeInput.value = data.localidade || "";
+        ufSelect.value = data.uf || "";
+
+        cidadesList.innerHTML = "";
+        if (data.localidade) {
+          const opt = document.createElement("option");
+          opt.value = data.localidade;
+          cidadesList.appendChild(opt);
+        }
+
+        setError("cep", "");
+      } catch (err) {
+        console.error(err);
+        setError("cep", "Erro ao consultar CEP.");
+      }
     }
 
-    function isTelefoneValido(tel) {
-      const d = tel.replace(/\D/g, "");
-      return d.length === 10 || d.length === 11;
-    }
+    cepInput.addEventListener("blur", () => {
+      const cep = cepInput.value;
+      if (cep.replace(/\D/g, "").length === 8) {
+        buscarCEP(cep);
+      }
+    });
 
-    // ====== ENVIO DO FORMULÁRIO (SALVAR NO "BANCO") ======
-    const formCadastro = document.getElementById("formCadastro");
-    const statusEnvio = document.getElementById("status-envio");
+    // Sem número
+    semNumeroCheckbox.addEventListener("change", () => {
+      if (semNumeroCheckbox.checked) {
+        numeroInput.value = "S/N";
+        numeroInput.disabled = true;
+        setError("numero", "");
+      } else {
+        numeroInput.disabled = false;
+        numeroInput.value = "";
+      }
+    });
 
-    formCadastro.addEventListener("submit", (e) => {
+    ufSelect.addEventListener("change", () => {
+      cidadesList.innerHTML = "";
+      setError("uf", "");
+    });
+
+    // Data de nascimento – não pode ser futura / idade > 120
+    dataNascimentoInput.addEventListener("blur", () => {
+      const valor = dataNascimentoInput.value;
+      if (!valor) return;
+      const data = new Date(valor + "T00:00:00");
+      const hoje = new Date();
+      const anoMin = hoje.getFullYear() - 120;
+      if (data > hoje) {
+        setError("dataNascimento", "Data não pode ser futura.");
+        return;
+      }
+      if (data.getFullYear() < anoMin) {
+        setError("dataNascimento", "Data de nascimento inválida.");
+        return;
+      }
+      setError("dataNascimento", "");
+    });
+
+    // E-mail
+    emailInput.addEventListener("blur", () => {
+      const v = emailInput.value.trim();
+      if (!v) return;
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regex.test(v)) {
+        setError("email", "E-mail inválido.");
+      } else {
+        setError("email", "");
+      }
+    });
+
+    // ====== SUBMIT (SALVAR NO localStorage) ======
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
+      clearAllErrors();
       statusEnvio.textContent = "";
+      statusEnvio.className = "status";
 
-      const dados = Object.fromEntries(new FormData(formCadastro).entries());
+      let valido = true;
 
-      // validações mínimas extras
-      if (!isValidCPF(dados.cpf)) {
-        statusEnvio.textContent = "CPF inválido.";
+      if (!form.nome.value.trim()) { setError("nome","Informe o nome."); valido=false; }
+      if (!isValidCPF(cpfInput.value)) { setError("cpf","CPF inválido."); valido=false; }
+      if (!dataNascimentoInput.value) { setError("dataNascimento","Informe a data."); valido=false; }
+      if (!form.nomeMae.value.trim()) { setError("nomeMae","Informe o nome da mãe."); valido=false; }
+      if (!isTelefoneValido(telefoneInput.value)) { setError("telefone","Telefone inválido."); valido=false; }
+
+      const emailVal = emailInput.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailVal || !emailRegex.test(emailVal)) {
+        setError("email","E-mail inválido."); valido=false;
+      }
+
+      const cepDigits = cepInput.value.replace(/\D/g, "");
+      if (cepDigits.length !== 8) { setError("cep","CEP deve ter 8 dígitos."); valido=false; }
+
+      if (!logradouroInput.value.trim()) { setError("logradouro","Informe o logradouro."); valido=false; }
+      if (!semNumeroCheckbox.checked && !numeroInput.value.trim()) {
+        setError("numero","Informe o número ou marque 'Sem número'."); valido=false;
+      }
+      if (!bairroInput.value.trim()) { setError("bairro","Informe o bairro."); valido=false; }
+      if (!ufSelect.value) { setError("uf","Selecione o estado."); valido=false; }
+      if (!cidadeInput.value.trim()) { setError("cidade","Informe a cidade."); valido=false; }
+
+      if (!valido) {
+        statusEnvio.textContent = "Corrija os campos destacados.";
         statusEnvio.className = "status err";
         return;
       }
-      if (!isTelefoneValido(dados.telefone)) {
-        statusEnvio.textContent = "Telefone inválido.";
-        statusEnvio.className = "status err";
-        return;
-      }
 
+      const dados = Object.fromEntries(new FormData(form).entries());
       const registros = carregarRegistros();
       registros.push({
         ...dados,
@@ -385,8 +702,9 @@
       });
       salvarRegistros(registros);
 
-      formCadastro.reset();
-      statusEnvio.textContent = "Registro salvo com sucesso (localmente).";
+      form.reset();
+      numeroInput.disabled = false;
+      statusEnvio.textContent = "Registro salvo com sucesso (neste navegador).";
       statusEnvio.className = "status ok";
     });
 
@@ -401,8 +719,9 @@
       tbody.innerHTML = "";
 
       if (!registros.length) {
-        tbody.innerHTML = "<tr><td colspan='5'>Nenhum registro.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='7'>Nenhum registro.</td></tr>";
         badgeTotal.textContent = "0 registros";
+        statusLista.textContent = "";
         return;
       }
 
@@ -412,17 +731,20 @@
           <td>${r.nome || ""}</td>
           <td>${r.cpf || ""}</td>
           <td>${r.dataNascimento || ""}</td>
-          <td>${r.cidade || ""}</td>
+          <td>${r.nomeMae || ""}</td>
+          <td>${(r.cidade || "") + (r.uf ? " / " + r.uf : "")}</td>
           <td>${r.telefone || ""}</td>
+          <td>${r.email || ""}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      badgeTotal.textContent = `${registros.length} registro${registros.length > 1 ? "s" : ""}`;
+      badgeTotal.textContent = `${registros.length} registro${registros.length>1?"s":""}`;
+      statusLista.textContent = "";
     }
 
     btnLimpar.addEventListener("click", () => {
-      if (confirm("Tem certeza que deseja apagar todos os registros salvos neste navegador?")) {
+      if (confirm("Apagar todos os registros salvos neste navegador?")) {
         localStorage.removeItem(STORAGE_KEY);
         atualizarTabela();
         statusLista.textContent = "Registros apagados.";
@@ -430,9 +752,8 @@
       }
     });
 
-    // Atualiza tabela ao abrir
+    // Carrega tabela ao abrir
     atualizarTabela();
   </script>
-
 </body>
 </html>
